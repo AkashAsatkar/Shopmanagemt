@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+<title>Bootstrap Example</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+<h2>Shipment Management Project</h2>
+<form id="projectForm" method="post">
+<div class="form-group">
+<span><label for="proshp">Shipment-No.:</label> <label id="shpIdMsg">
+</label></span>
+<input type="text" class="form-control" name="proshp" id="proshp"
+placeholder="Enter Project ID" required>
+</div>
+<div class="form-group">
+<label for="prodesc">Description:</label>
+<input type="text" class="form-control" id="prodesc"
+placeholder="Enter Project Name" name="prodesc">
+</div>
+<div class="form-group">
+<label for="prosou">Source:</label>
+<input type="email" class="form-control" id="prosou"
+placeholder="Enter Assigned-To " name="prosou">
+</div>
+    <div class="form-group">
+<label for="prodest">Destination:</label>
+<input type="email" class="form-control" id="prodest"
+placeholder="Enter Assignment-Date" name="prodest">
+</div>
+    <div class="form-group">
+<label for="proshpdt">Shipping-Date:</label>
+<input type="email" class="form-control" id="proshpdt"
+placeholder="Enter Employee Email" name="proshpdt">
+</div>
+    <div class="form-group">
+<label for="proedd">Expected-Delivery-Date:</label>
+<input type="email" class="form-control" id="proedd"
+placeholder="Enter Expected-Delivery-Date" name="proedd">
+</div>
+<input type="button" class="btn btn-primary" id="proSave" value="Save"
+onclick="saveEmployee();">
+</form>
+</div>
+<script>
+$("#proshp").focus();
+function validateAndGetFormData() {
+var proshpVar = $("#proshp").val();
+if (proshpVar === "") {
+alert("Employee ID Required Value");
+$("#proshp").focus();
+return "";
+}
+var prodescVar = $("#prodesc").val();
+if (prodescVar === "") {
+alert("Employee Name is Required Value");
+$("#prodesc").focus();
+return "";
+}
+var prosouVar = $("#prosou").val();
+if (prosouVar === "") {
+alert("Employee Email is Required Value");
+$("#prosou").focus();
+return "";
+}
+var prodestVar = $("#prodest").val();
+if (prodestVar === "") {
+alert("Employee Email is Required Value");
+$("#prodest").focus();
+return "";
+}
+var proshpdtVar = $("#proshpdt").val();
+if (proshpdtVar === "") {
+alert("Employee Email is Required Value");
+$("#proshpdt").focus();
+return "";
+}
+var proeddVar = $("#proedd").val();
+if (proeddVar === "") {
+alert("Employee Email is Required Value");
+$("#proedd").focus();
+return "";
+}
+var jsonStrObj = {
+proshp: proshpVar,
+prodesc: prodescVar,
+prosou: prosouVar,
+prodest: prodestVar,
+proshpdt: proshpdtVar,
+proedd: proeddVar,
+};
+return JSON.stringify(jsonStrObj);
+}
+// This method is used to create PUT Json request.
+function createPUTRequest(connToken, jsonObj, dbName, relName) {
+var putRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","
++ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"PUT\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"jsonStr\": \n"
++ jsonObj
++ "\n"
++ "}";
+return putRequest;
+}
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result) {
+jsonObj = JSON.parse(result);
+}).fail(function (result) {
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+function resetForm() {
+$("#proshp").val("");
+$("#prodisc").val("");
+$("#prosou").val("");
+$("#proshp").focus();
+$("#prodist").val("");
+$("#proedd").val("");
+
+}
+function saveEmployee() {
+var jsonStr = validateAndGetFormData();
+if (jsonStr === "") {
+return;
+}
+var putReqStr = createPUTRequest("90938205|-31949272903300710|90954858",
+jsonStr, "SHIPMENT-TABLE", "DELIVERY-DB");
+alert(putReqStr);
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(putReqStr,
+"http://api.login2explore.com:5577","/api/iml");
+alert(JSON.stringify(resultObj));
+jQuery.ajaxSetup({async: true});
+resetForm();
+}
+</script>
+</body>
+</html>
+
